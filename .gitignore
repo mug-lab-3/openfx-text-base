@@ -1,0 +1,11 @@
+openfx-OFX_Release_1.5.1/
+*.ofx
+build/
+.cache/
+.ccache/
+.sdk/
+
+# Legacy SDK and 3rdparty (will be removed soon as they are now in Docker)
+3rdparty/
+openfx-*/
+.sdk/

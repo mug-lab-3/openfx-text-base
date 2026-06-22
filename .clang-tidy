@@ -1,0 +1,20 @@
+Checks: >
+  -*,
+  bugprone-*,
+  modernize-*,
+  performance-*,
+  readability-*,
+  -readability-identifier-length,
+  google-*
+
+WarningsAsErrors: ""
+
+CheckOptions:
+  - key: readability-identifier-naming.MemberPrefix
+    value: ""
+  - key: readability-identifier-naming.MemberSuffix
+    value: "_"
+  - key: readability-magic-numbers.IgnoreAllFloatingPointValues
+    value: "true"
+  - key: modernize-use-override.IgnoreDestructors
+    value: "true"
