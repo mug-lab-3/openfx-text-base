@@ -109,6 +109,11 @@ static auto makeDecl() -> RootDecl {
                 .options_ = {ParamIds::kPageText, ParamIds::kPageLayout, ParamIds::kPageStyle},
             },
 
+            PushButtonParameter::Spec{
+                .id_ = ParamIds::kResetPositionAndSize,
+                .label_ = "Reset Position and Size (Alt + n)",
+            },
+
             // ================================================================
             // Text page
             // ================================================================
@@ -137,7 +142,7 @@ static auto makeDecl() -> RootDecl {
                     DoubleParameter::Spec{
                         .id_ = ParamIds::kFontSize,
                         .label_ = "Font Size",
-                        .default_ = 40.0,
+                        .default_ = kDefaultFontSize,
                         .range_ = std::pair{1.0, 500.0},
                         .displayRange_ = std::pair{8.0, 200.0},
                         .increment_ = 1.0,
@@ -157,7 +162,7 @@ static auto makeDecl() -> RootDecl {
                     Double2DParameter::Spec{
                         .id_ = ParamIds::kPosition,
                         .label_ = "Position",
-                        .default_ = {.x_ = 0.5, .y_ = 0.5},
+                        .default_ = kDefaultPosition,
                         .doubleType_ = OFX::eDoubleTypeXY,
                         .range_ = std::pair{ParamPoint2D{.x_ = -2.0, .y_ = -2.0}, ParamPoint2D{.x_ = 3.0, .y_ = 3.0}},
                         .displayRange_ =
@@ -168,7 +173,7 @@ static auto makeDecl() -> RootDecl {
                     DoubleParameter::Spec{
                         .id_ = ParamIds::kSize,
                         .label_ = "Size",
-                        .default_ = 1.0,
+                        .default_ = kDefaultSize,
                         .range_ = std::pair{0.01, 10.0},
                         .displayRange_ = std::pair{0.1, 4.0},
                         .increment_ = 0.01,

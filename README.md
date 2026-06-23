@@ -55,6 +55,8 @@
 - ドラッグ可能な UI 要素（`DragUseCase`、`GrabableAreaDisplayUseCase`）
 - カーソルハイライト（`CursorHighlightUseCase`）
 - ドラッグフィードバック（`DragFeedbackUseCase`）
+- ボタンによるコマンド実行（`ResetPositionAndSizeCommand`）— Position / Size を初期値にリセット
+- ショートカットキー（`ResetPositionAndSizeKeyUseCase`）— Alt+N で同じリセットを実行
 - 主要パラメータ型の定義例（`ParameterManager`）
 
 ---

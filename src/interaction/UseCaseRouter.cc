@@ -13,6 +13,8 @@
 #include "interaction/usecases/CursorHighlightUseCase.h"
 #include "interaction/usecases/GrabableAreaDisplayUseCase.h"
 #include "interaction/usecases/DragFeedbackUseCase.h"
+#include "interaction/usecases/ResetPositionAndSizeCommand.h"
+#include "interaction/usecases/ResetPositionAndSizeKeyUseCase.h"
 #include "debugger/LogManager.h"
 #include "params/ParameterManager.h"
 
@@ -31,6 +33,15 @@ UseCaseRouter::UseCaseRouter() {
     factories_.emplace_back([this]() -> std::unique_ptr<InteractionUseCase> {
         return std::make_unique<DragFeedbackUseCase>();
     });
+
+    commandUseCases_.emplace_back(std::make_unique<ResetPositionAndSizeCommand>());
+
+    for (const auto& command : commandUseCases_) {
+        const auto ids = command->targetParameterIds();
+        commandTriggerIds_.insert(ids.begin(), ids.end());
+    }
+
+    keyUseCases_.emplace_back(std::make_unique<ResetPositionAndSizeKeyUseCase>());
 }
 
 UseCaseRouter::~UseCaseRouter() = default;

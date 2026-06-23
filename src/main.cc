@@ -46,6 +46,9 @@ void OfxBasePlugin::changedParam(const OFX::InstanceChangedArgs& args, const std
     if (args.reason == OFX::eChangeTime) { return; }
     LOG_INFO("EVENT_PARAM_CHANGED", "param", paramName, "reason", static_cast<int>(args.reason));
     params_.updateVisibility(args.time);
+    if (commandRouter_.isCommandTrigger(paramName)) {
+        commandRouter_.onTriggerCommand(paramName, args.time, params_);
+    }
 }
 
 void OfxBasePlugin::render(const OFX::RenderArguments& args) {

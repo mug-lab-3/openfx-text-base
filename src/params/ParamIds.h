@@ -26,9 +26,10 @@ inline constexpr const char* kFontSize    = "fontSize";
 // ---------------------------------------------------------------------------
 // Layout page
 // ---------------------------------------------------------------------------
-inline constexpr const char* kLayoutGroup = "layoutGroup";
-inline constexpr const char* kPosition    = "position";
-inline constexpr const char* kSize        = "size";
+inline constexpr const char* kLayoutGroup            = "layoutGroup";
+inline constexpr const char* kPosition               = "position";
+inline constexpr const char* kSize                   = "size";
+inline constexpr const char* kResetPositionAndSize   = "resetPositionAndSize";
 
 // ---------------------------------------------------------------------------
 // Style page

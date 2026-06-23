@@ -2,6 +2,7 @@
 
 #include "ofxsImageEffect.h"
 #include "params/ParameterManager.h"
+#include "interaction/UseCaseRouter.h"
 
 class OfxBasePlugin : public OFX::ImageEffect {
    public:
@@ -14,4 +15,5 @@ class OfxBasePlugin : public OFX::ImageEffect {
     OFX::Clip* dstClip_ = nullptr;
     OFX::Clip* srcClip_ = nullptr;
     MugLab::OfxBase::ParameterManager params_;
+    MugLab::OfxBase::UseCaseRouter commandRouter_;
 };

@@ -53,6 +53,8 @@ See [3rdparty-licenses.md](3rdparty-licenses.md) for the full license text of ea
 - Draggable UI elements (`DragUseCase`, `GrabableAreaDisplayUseCase`)
 - Cursor highlight (`CursorHighlightUseCase`)
 - Drag feedback (`DragFeedbackUseCase`)
+- Button-triggered command (`ResetPositionAndSizeCommand`) — resets Position and Size to defaults
+- Keyboard shortcut (`ResetPositionAndSizeKeyUseCase`) — Alt+N triggers the same reset
 - Examples of major parameter type definitions (`ParameterManager`)
 
 ---

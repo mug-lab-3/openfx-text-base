@@ -4,16 +4,15 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_OUTLINE_H
-#include <hb.h>
 #include <hb-ft.h>
+#include <hb.h>
 
 #include <cstdint>
-
 #include <format>
 #include <sstream>
 
-#include "main.h"
 #include "font/FontManager.h"
+#include "main.h"
 #include "params/ParamIds.h"
 #include "processors/Common.h"
 #include "processors/Generic.h"
@@ -26,9 +25,9 @@ namespace MugLab::OfxBase {
 // ==============================================================================
 struct OutlineCtx {
     BLPath* path_;
-    double  scale_;
-    double  penX_;
-    double  penY_;
+    double scale_;
+    double penX_;
+    double penY_;
 };
 
 static int ftMoveTo(const FT_Vector* to, void* user) {
@@ -43,24 +42,23 @@ static int ftLineTo(const FT_Vector* to, void* user) {
 }
 static int ftConicTo(const FT_Vector* ctrl, const FT_Vector* to, void* user) {
     auto* c = static_cast<OutlineCtx*>(user);
-    c->path_->quad_to(c->penX_ + ctrl->x * c->scale_, c->penY_ - ctrl->y * c->scale_,
-                      c->penX_ + to->x   * c->scale_, c->penY_ - to->y   * c->scale_);
+    c->path_->quad_to(c->penX_ + ctrl->x * c->scale_, c->penY_ - ctrl->y * c->scale_, c->penX_ + to->x * c->scale_,
+                      c->penY_ - to->y * c->scale_);
     return 0;
 }
 static int ftCubicTo(const FT_Vector* c1, const FT_Vector* c2, const FT_Vector* to, void* user) {
     auto* c = static_cast<OutlineCtx*>(user);
-    c->path_->cubic_to(c->penX_ + c1->x * c->scale_, c->penY_ - c1->y * c->scale_,
-                       c->penX_ + c2->x * c->scale_, c->penY_ - c2->y * c->scale_,
-                       c->penX_ + to->x * c->scale_, c->penY_ - to->y * c->scale_);
+    c->path_->cubic_to(c->penX_ + c1->x * c->scale_, c->penY_ - c1->y * c->scale_, c->penX_ + c2->x * c->scale_,
+                       c->penY_ - c2->y * c->scale_, c->penX_ + to->x * c->scale_, c->penY_ - to->y * c->scale_);
     return 0;
 }
 static const FT_Outline_Funcs kOutlineFuncs = {
-    .move_to  = ftMoveTo,
-    .line_to  = ftLineTo,
+    .move_to = ftMoveTo,
+    .line_to = ftLineTo,
     .conic_to = ftConicTo,
     .cubic_to = ftCubicTo,
-    .shift    = 0,
-    .delta    = 0,
+    .shift = 0,
+    .delta = 0,
 };
 
 // ==============================================================================
@@ -68,8 +66,7 @@ static const FT_Outline_Funcs kOutlineFuncs = {
 // Renders into whatever BLImage is passed in (caller owns the backing memory).
 // ==============================================================================
 // Returns the total x-advance of a shaped line in pixels.
-static auto measureLineAdvance(FT_Face face, hb_font_t* hbFont,
-                               const std::string& line, double fontSize) -> double {
+static auto measureLineAdvance(FT_Face face, hb_font_t* hbFont, const std::string& line, double fontSize) -> double {
     hb_buffer_t* buf = hb_buffer_create();
     hb_buffer_add_utf8(buf, line.c_str(), -1, 0, -1);
     hb_buffer_set_direction(buf, HB_DIRECTION_LTR);
@@ -89,8 +86,7 @@ static auto measureLineAdvance(FT_Face face, hb_font_t* hbFont,
     return advance;
 }
 
-static void drawTextLine(BLContext& ctx, FT_Face face, hb_font_t* hbFont,
-                         const std::string& line, double fontSize,
+static void drawTextLine(BLContext& ctx, FT_Face face, hb_font_t* hbFont, const std::string& line, double fontSize,
                          double originX, double originY) {
     hb_buffer_t* buf = hb_buffer_create();
     hb_buffer_add_utf8(buf, line.c_str(), -1, 0, -1);
@@ -99,7 +95,7 @@ static void drawTextLine(BLContext& ctx, FT_Face face, hb_font_t* hbFont,
     hb_shape(hbFont, buf, nullptr, 0);
 
     unsigned int glyphCount = 0;
-    hb_glyph_info_t*     infos = hb_buffer_get_glyph_infos(buf, &glyphCount);
+    hb_glyph_info_t* infos = hb_buffer_get_glyph_infos(buf, &glyphCount);
     hb_glyph_position_t* poses = hb_buffer_get_glyph_positions(buf, &glyphCount);
 
     const double scale = fontSize / static_cast<double>(face->units_per_EM);
@@ -107,8 +103,7 @@ static void drawTextLine(BLContext& ctx, FT_Face face, hb_font_t* hbFont,
     double penY = originY;
 
     for (unsigned int i = 0; i < glyphCount; ++i) {
-        if (FT_Load_Glyph(face, infos[i].codepoint,
-                          FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING) != 0) {
+        if (FT_Load_Glyph(face, infos[i].codepoint, FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING) != 0) {
             penX += static_cast<double>(poses[i].x_advance) * scale;
             continue;
         }
@@ -117,7 +112,7 @@ static void drawTextLine(BLContext& ctx, FT_Face face, hb_font_t* hbFont,
         const double gy = penY - static_cast<double>(poses[i].y_offset) * scale;
 
         BLPath glyphPath;
-        OutlineCtx oc{ &glyphPath, scale, gx, gy };
+        OutlineCtx oc{&glyphPath, scale, gx, gy};
         FT_Outline_Decompose(&face->glyph->outline, &kOutlineFuncs, &oc);
         glyphPath.close();
         ctx.fill_path(glyphPath);
@@ -133,14 +128,18 @@ static void drawTextLine(BLContext& ctx, FT_Face face, hb_font_t* hbFont,
 // BB width  = widest line advance
 // BB height = lineCount * lineHeight  (lineHeight = fontSize * 1.2)
 // The baseline of the first line is placed at centerY - bbHeight/2 + fontSize.
-static void drawText(BLImage& target, const std::string& text, double fontSize,
-                     double centerX, double centerY, const std::string& fontName) {
+static void drawText(BLImage& target, const std::string& text, double fontSize, double centerX, double centerY,
+                     const std::string& fontName) {
     const auto& fonts = FontManager::getFontList();
-    if (fonts.empty()) { return; }
+    if (fonts.empty()) {
+        return;
+    }
 
     const std::string& resolvedFont = fontName.empty() ? fonts[0].fontName_ : fontName;
     FontManager::withFace(resolvedFont, [&](FT_Face face) {
-        if (face == nullptr) { return; }
+        if (face == nullptr) {
+            return;
+        }
 
         hb_font_t* hbFont = hb_ft_font_create(face, nullptr);
         hb_font_set_scale(hbFont, face->units_per_EM, face->units_per_EM);
@@ -164,11 +163,11 @@ static void drawText(BLImage& target, const std::string& text, double fontSize,
             }
         }
 
-        const double bbWidth  = maxAdvance;
+        const double bbWidth = maxAdvance;
         const double bbHeight = static_cast<double>(lines.size()) * lineHeight;
 
         // Top-left of BB → first baseline = top + fontSize (ascender approximation).
-        const double startX = centerX - bbWidth  * 0.5;
+        const double startX = centerX - bbWidth * 0.5;
         const double startY = centerY - bbHeight * 0.5 + fontSize;
 
         BLContext ctx(target);
@@ -192,13 +191,12 @@ static void drawText(BLImage& target, const std::string& text, double fontSize,
 // Porter-Duff Over: PRGB32 BLImage overlay (top-down) → float RGBA dst (bottom-up).
 // Used only in the CPU float path; 8/16-bit paths use Blend2dToOpenFxProcessor.
 // ==============================================================================
-static void compositeOverlayScalar(const BLImageData& overlay, const float* src,
-                                   float* dst, int w, int h) {
+static void compositeOverlayScalar(const BLImageData& overlay, const float* src, float* dst, int w, int h) {
     for (int y = 0; y < h; ++y) {
-        const uint32_t* row = getBlend2dRowPtr(
-            overlay, h, 0, y);  // imageOriginY=0 because overlay is sized exactly w×h
+        const uint32_t* row =
+            getBlend2dRowPtr(overlay, h, 0, y);  // imageOriginY=0 because overlay is sized exactly w×h
         const float* srcRow = src ? (src + static_cast<ptrdiff_t>(y) * w * 4) : nullptr;
-        float*       dstRow = dst  + static_cast<ptrdiff_t>(y) * w * 4;
+        float* dstRow = dst + static_cast<ptrdiff_t>(y) * w * 4;
 
         for (int x = 0; x < w; ++x) {
             const uint32_t p = row[x];
@@ -251,7 +249,8 @@ static auto buildParamDump(OfxBasePlugin& effect, double time, const std::string
     ss << "  useCustomColor : " << (useColor ? "true" : "false") << "\n";
     if (useColor) {
         const auto col = p.getRGBA(ParamIds::kColor, time);
-        ss << "  color          : " << std::format("{:.2f}, {:.2f}, {:.2f}, {:.2f}", col.r_, col.g_, col.b_, col.a_) << "\n";
+        ss << "  color          : " << std::format("{:.2f}, {:.2f}, {:.2f}, {:.2f}", col.r_, col.g_, col.b_, col.a_)
+           << "\n";
     }
 
     for (int i = 0; i < ParamIds::kShadowSlotCount; ++i) {
@@ -263,7 +262,8 @@ static auto buildParamDump(OfxBasePlugin& effect, double time, const std::string
             const auto off = p.getDouble2D(std::string(ParamIds::kShadowOffsetPrefix) + s, time);
             ss << "  offset  : " << std::format("{:.1f}, {:.1f}", off.x_, off.y_) << "\n";
             const auto col = p.getRGBA(std::string(ParamIds::kShadowColorPrefix) + s, time);
-            ss << "  color   : " << std::format("{:.2f}, {:.2f}, {:.2f}, {:.2f}", col.r_, col.g_, col.b_, col.a_) << "\n";
+            ss << "  color   : " << std::format("{:.2f}, {:.2f}, {:.2f}, {:.2f}", col.r_, col.g_, col.b_, col.a_)
+               << "\n";
         }
     }
 
@@ -304,21 +304,25 @@ void Renderer::render(OfxBasePlugin& effect, const OFX::RenderArguments& args) {
 
     auto dstImageOwner = std::unique_ptr<OFX::Image>(effect.dstClip_->fetchImage(args.time));
     auto* dstImage = dstImageOwner.get();
-    if (dstImage == nullptr) { return; }
+    if (dstImage == nullptr) {
+        return;
+    }
 
     const OfxRectI bounds = dstImage->getBounds();
     const int w = bounds.x2 - bounds.x1;
     const int h = bounds.y2 - bounds.y1;
-    if (w <= 0 || h <= 0) { return; }
+    if (w <= 0 || h <= 0) {
+        return;
+    }
 
-    const auto rod    = effect.dstClip_->getRegionOfDefinition(args.time);
+    const auto rod = effect.dstClip_->getRegionOfDefinition(args.time);
     const auto canvas = CoordTransform::canvasSizeFromRod(rod, w, h);
 
-    const auto   kPos     = effect.params_.getDouble2D(ParamIds::kPosition, args.time, {.x_ = 0.5, .y_ = 0.5});
-    const auto   kOrigin  = CoordTransform::ofxNormToTile(kPos.x_, kPos.y_, canvas, bounds);
+    const auto kPos = effect.params_.getDouble2D(ParamIds::kPosition, args.time, {.x_ = 0.5, .y_ = 0.5});
+    const auto kOrigin = CoordTransform::ofxNormToTile(kPos.x_, kPos.y_, canvas, bounds);
     const double kOriginX = kOrigin.x;
     const double kOriginY = kOrigin.y;
-    const double kFontSizeParam = effect.params_.getDouble(ParamIds::kFontSize, args.time, 64.0);
+    const double kFontSizeParam = effect.params_.getDouble(ParamIds::kFontSize, args.time, kDefaultFontSize);
     const double kFontSize = kFontSizeParam * (canvas.h / 1080.0);
 
 #ifdef __APPLE__
@@ -329,9 +333,12 @@ void Renderer::render(OfxBasePlugin& effect, const OFX::RenderArguments& args) {
         void* sharedPixels = metalCompositor_.getSharedOverlayPixels(args.pMetalCmdQ, w, h);
         if (sharedPixels != nullptr) {
             BLImage overlay;
-            overlay.create_from_data(w, h, BL_FORMAT_PRGB32, sharedPixels,
-                                     static_cast<intptr_t>(w) * 4);
-            { BLContext c(overlay); c.clear_all(); c.end(); }
+            overlay.create_from_data(w, h, BL_FORMAT_PRGB32, sharedPixels, static_cast<intptr_t>(w) * 4);
+            {
+                BLContext c(overlay);
+                c.clear_all();
+                c.end();
+            }
             drawText(overlay, kText, kFontSize, kOriginX, kOriginY, kFontName);
             overlay.reset();
 
@@ -355,12 +362,17 @@ void Renderer::render(OfxBasePlugin& effect, const OFX::RenderArguments& args) {
     // always uses float32 for GPU-accelerated effects, so this is safe in practice.
     if (args.pOpenCLCmdQ != nullptr) {
         const size_t packedSize = static_cast<size_t>(w) * static_cast<size_t>(h) * 4;
-        if (gpuStagingBuf_.size() != packedSize) { gpuStagingBuf_.assign(packedSize, 0); }
+        if (gpuStagingBuf_.size() != packedSize) {
+            gpuStagingBuf_.assign(packedSize, 0);
+        }
 
         BLImage overlay;
-        overlay.create_from_data(w, h, BL_FORMAT_PRGB32, gpuStagingBuf_.data(),
-                                 static_cast<intptr_t>(w) * 4);
-        { BLContext c(overlay); c.clear_all(); c.end(); }
+        overlay.create_from_data(w, h, BL_FORMAT_PRGB32, gpuStagingBuf_.data(), static_cast<intptr_t>(w) * 4);
+        {
+            BLContext c(overlay);
+            c.clear_all();
+            c.end();
+        }
         drawText(overlay, kText, kFontSize, kOriginX, kOriginY, kFontName);
         overlay.reset();
 
@@ -371,8 +383,7 @@ void Renderer::render(OfxBasePlugin& effect, const OFX::RenderArguments& args) {
         void* srcBuf = srcImg ? srcImg->getPixelData() : nullptr;
         void* dstBuf = dstImage->getPixelData();
 
-        if (openclCompositor_.composite(args.pOpenCLCmdQ, gpuStagingBuf_.data(),
-                                        srcBuf, dstBuf, w, h)) {
+        if (openclCompositor_.composite(args.pOpenCLCmdQ, gpuStagingBuf_.data(), srcBuf, dstBuf, w, h)) {
             return;
         }
         // OpenCL composite failed. CPU fallback below handles host-accessible
@@ -422,8 +433,8 @@ void Renderer::render(OfxBasePlugin& effect, const OFX::RenderArguments& args) {
 
     if (dstDepth == OFX::eBitDepthFloat) {
         const float* srcPixels = (srcImg && !srcPrecopied)
-            ? static_cast<const float*>(srcImg->getPixelAddress(bounds.x1, bounds.y1))
-            : nullptr;
+                                     ? static_cast<const float*>(srcImg->getPixelAddress(bounds.x1, bounds.y1))
+                                     : nullptr;
         auto* dstPixels = static_cast<float*>(dstImage->getPixelAddress(bounds.x1, bounds.y1));
 
         BLImageData cacheData{};

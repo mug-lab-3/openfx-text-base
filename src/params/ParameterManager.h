@@ -10,6 +10,14 @@
 
 namespace MugLab::OfxBase {
 
+// ---------------------------------------------------------------------------
+// Default parameter values — single source of truth shared by parameter
+// declarations and command/key use cases that reset values to defaults.
+// ---------------------------------------------------------------------------
+inline constexpr ParamPoint2D kDefaultPosition{.x_ = 0.5, .y_ = 0.5};
+inline constexpr double       kDefaultSize     = 1.0;
+inline constexpr double       kDefaultFontSize = 40.0;
+
 // ParameterManager owns the full parameter tree for one plugin instance.
 // Usage:
 //   describe-time : ParameterManager::defineAllParameters(descriptor)

@@ -261,6 +261,8 @@ add_library(OfxBase SHARED
     src/interaction/usecases/CursorHighlightUseCase.cc
     src/interaction/usecases/GrabableAreaDisplayUseCase.cc
     src/interaction/usecases/DragFeedbackUseCase.cc
+    src/interaction/usecases/ResetPositionAndSizeCommand.cc
+    src/interaction/usecases/ResetPositionAndSizeKeyUseCase.cc
 )
 
 if(WIN32)
