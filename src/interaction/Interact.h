@@ -1,11 +1,13 @@
 #pragma once
 
-#include <mutex>
 #include <ofxCore.h>
-#include "ofxsInteract.h"
-#include "ofxDrawSuite.h"
+
+#include <mutex>
+
 #include "interaction/InteractionInput.h"
 #include "interaction/UseCaseRouter.h"
+#include "ofxDrawSuite.h"
+#include "ofxsInteract.h"
 
 namespace MugLab::OfxBase {
 
@@ -36,4 +38,4 @@ class Interact : public OFX::OverlayInteract {
     bool needsRedraw_ = false;
 };
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

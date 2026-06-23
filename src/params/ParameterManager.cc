@@ -263,8 +263,8 @@ auto ParameterManager::getDouble(const std::string& id, double time, double fall
     return root_.findValue<DoubleParameter>(id, time, fallback);
 }
 
-auto ParameterManager::getDouble2D(const std::string& id, double time, const ParamPoint2D& fallback) const
-    -> ParamPoint2D {
+auto ParameterManager::getDouble2D(const std::string& id, double time,
+                                   const ParamPoint2D& fallback) const -> ParamPoint2D {
     return root_.findValue<Double2DParameter>(id, time, fallback);
 }
 
@@ -280,8 +280,8 @@ auto ParameterManager::getRGBA(const std::string& id, double time, const ParamRG
     return root_.findValue<RGBAParameter>(id, time, fallback);
 }
 
-auto ParameterManager::getChoiceOption(const std::string& id, double time, const std::string& fallback) const
-    -> std::string {
+auto ParameterManager::getChoiceOption(const std::string& id, double time,
+                                       const std::string& fallback) const -> std::string {
     const auto* p = root_.findParameter<ChoiceParameter>(id);
     if (p == nullptr || p->options().empty()) {
         return fallback;

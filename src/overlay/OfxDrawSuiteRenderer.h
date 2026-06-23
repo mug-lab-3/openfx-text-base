@@ -1,7 +1,7 @@
 #pragma once
 
-#include "overlay/OverlayRenderer.h"
 #include "ofxDrawSuite.h"
+#include "overlay/OverlayRenderer.h"
 
 namespace MugLab::OfxBase {
 

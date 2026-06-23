@@ -1,7 +1,9 @@
 #pragma once
 
 #include <blend2d.h>
+
 #include <vector>
+
 #include "ofxsImageEffect.h"
 #ifdef __APPLE__
 #include "processors/MetalCompositor.h"
@@ -22,12 +24,12 @@ class Renderer {
 
    private:
 #ifdef __APPLE__
-    MetalCompositor      metalCompositor_;
+    MetalCompositor metalCompositor_;
 #else
-    OpenCLCompositor     openclCompositor_;
+    OpenCLCompositor openclCompositor_;
 #endif
-    BLImage              imageCache_;       // reused across frames on the CPU path
-    std::vector<uint8_t> gpuStagingBuf_;   // CPU-side PRGB32 buffer uploaded to GPU each frame
+    BLImage imageCache_;                  // reused across frames on the CPU path
+    std::vector<uint8_t> gpuStagingBuf_;  // CPU-side PRGB32 buffer uploaded to GPU each frame
 };
 
 }  // namespace MugLab::OfxBase

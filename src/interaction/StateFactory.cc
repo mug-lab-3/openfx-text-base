@@ -1,13 +1,13 @@
 #include "interaction/StateFactory.h"
+
 #include "interaction/UseCaseRouter.h"
 #include "params/ParamIds.h"
 #include "params/ParameterManager.h"
 
 namespace MugLab::OfxBase {
 
-auto StateFactory::createCurrent(double time, double canvasWidth, double canvasHeight,
-                                 OfxPointD renderScale, const UseCaseRouter& useCaseRouter,
-                                 const InteractionInput& input,
+auto StateFactory::createCurrent(double time, double canvasWidth, double canvasHeight, OfxPointD renderScale,
+                                 const UseCaseRouter& useCaseRouter, const InteractionInput& input,
                                  ParameterManager& parameterManager) -> CurrentState {
     CurrentState state;
     state.time_ = time;
@@ -21,10 +21,10 @@ auto StateFactory::createCurrent(double time, double canvasWidth, double canvasH
     return state;
 }
 
-auto StateFactory::createSnapshot(double time, double canvasWidth, double canvasHeight,
-                                  OfxPointD renderScale, const BLPoint& mouseCanvas, const OfxPointD& mouseOfx,
-                                  SelectionMode selectionMode, const std::vector<SelectionItem>& selection,
-                                  uint8_t modifiers, ParameterManager& parameterManager) -> SnapshotState {
+auto StateFactory::createSnapshot(double time, double canvasWidth, double canvasHeight, OfxPointD renderScale,
+                                  const BLPoint& mouseCanvas, const OfxPointD& mouseOfx, SelectionMode selectionMode,
+                                  const std::vector<SelectionItem>& selection, uint8_t modifiers,
+                                  ParameterManager& parameterManager) -> SnapshotState {
     SnapshotState state;
     state.canvasWidth_ = canvasWidth;
     state.canvasHeight_ = canvasHeight;
@@ -43,4 +43,4 @@ auto StateFactory::createSnapshot(double time, double canvasWidth, double canvas
     return state;
 }
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

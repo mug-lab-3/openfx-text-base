@@ -1,6 +1,7 @@
 #pragma once
 
 #include <blend2d.h>
+
 #include <cstdint>
 
 namespace OFX {

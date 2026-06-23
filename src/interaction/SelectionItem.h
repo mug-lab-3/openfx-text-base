@@ -22,4 +22,4 @@ struct SelectionItem {
     }
 };
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

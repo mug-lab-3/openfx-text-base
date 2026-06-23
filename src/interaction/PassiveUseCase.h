@@ -30,8 +30,7 @@ class PassiveUseCase : public InteractionUseCase {
     }
 
     auto penMotion(const InteractionInput& input, SnapshotState& snapshot, const CurrentState& current,
-                   ParameterManager&,
-                   const std::vector<std::string_view>& activeUseCases) -> UseCaseResult final {
+                   ParameterManager&, const std::vector<std::string_view>& activeUseCases) -> UseCaseResult final {
         return onPassivePenMotion(input, snapshot, current, activeUseCases);
     }
 
@@ -41,8 +40,10 @@ class PassiveUseCase : public InteractionUseCase {
     }
 
    protected:
-    virtual void onPassiveStart(SnapshotState&) {}
-    virtual void onPassiveFinish(SnapshotState&) {}
+    virtual void onPassiveStart(SnapshotState&) {
+    }
+    virtual void onPassiveFinish(SnapshotState&) {
+    }
 
     /**
      * @brief Passive version of penDown.

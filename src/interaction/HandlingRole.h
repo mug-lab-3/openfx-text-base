@@ -12,4 +12,4 @@ enum class HandlingRole : std::uint8_t {
     Passive
 };
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

@@ -1,11 +1,12 @@
 #include "interaction/Interact.h"
 
 #include <mutex>
+
 #include "debugger/LogManager.h"
-#include "params/ParameterManager.h"
 #include "interaction/StateFactory.h"
-#include "overlay/OfxDrawSuiteRenderer.h"
 #include "ofxDrawSuite.h"
+#include "overlay/OfxDrawSuiteRenderer.h"
+#include "params/ParameterManager.h"
 
 namespace MugLab::OfxBase {
 
@@ -34,8 +35,7 @@ auto Interact::draw(const OFX::DrawArgs& args) -> bool {
     input_.update(args, projectWidth, projectHeight);
     useCaseRouter_.update(input_, parameterManager_);
 
-    static auto* drawSuite =
-        static_cast<OfxDrawSuiteV1*>(const_cast<void*>(OFX::fetchSuite(kOfxDrawSuite, 1, true)));
+    static auto* drawSuite = static_cast<OfxDrawSuiteV1*>(const_cast<void*>(OFX::fetchSuite(kOfxDrawSuite, 1, true)));
 
     if (drawSuite == nullptr || currentContext_ == nullptr) {
         return false;
@@ -44,8 +44,8 @@ auto Interact::draw(const OFX::DrawArgs& args) -> bool {
     const CanvasSize canvas = {.width_ = projectWidth, .height_ = projectHeight};
     OfxDrawSuiteRenderer renderer(canvas, drawSuite, currentContext_);
 
-    CurrentState current = StateFactory::createCurrent(args.time, projectWidth, projectHeight,
-                                                         {1.0, 1.0}, useCaseRouter_, input_, parameterManager_);
+    CurrentState current = StateFactory::createCurrent(args.time, projectWidth, projectHeight, {1.0, 1.0},
+                                                       useCaseRouter_, input_, parameterManager_);
     useCaseRouter_.onDraw(renderer, current, parameterManager_);
     return true;
 }
@@ -64,7 +64,7 @@ auto Interact::penMotion(const OFX::PenArgs& args) -> bool {
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     input_.update(args);
     CurrentState current = StateFactory::createCurrent(args.time, input_.canvasWidth(), input_.canvasHeight(),
-                                                         {1.0, 1.0}, useCaseRouter_, input_, parameterManager_);
+                                                       {1.0, 1.0}, useCaseRouter_, input_, parameterManager_);
     const bool handled = useCaseRouter_.onPenMotion(input_, current, parameterManager_);
     triggerRedraw();
     return handled;
@@ -115,4 +115,4 @@ void Interact::triggerRedraw() {
     }
 }
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

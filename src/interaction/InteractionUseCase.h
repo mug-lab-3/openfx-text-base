@@ -9,8 +9,8 @@
 #include "interaction/HandlingRole.h"
 #include "interaction/Intent.h"
 #include "interaction/InteractionInput.h"
-#include "interaction/SnapshotState.h"
 #include "interaction/SelectionItem.h"
+#include "interaction/SnapshotState.h"
 #include "params/ParameterManager.h"
 
 namespace MugLab::OfxBase {
@@ -85,7 +85,7 @@ class InteractionUseCase {
     }
 
     virtual auto onDraw(OverlayRenderer& overlayRenderer, const SnapshotState& snapshot, const CurrentState& current,
-                         const std::vector<std::string_view>& activeUseCases) -> UseCaseResult;
+                        const std::vector<std::string_view>& activeUseCases) -> UseCaseResult;
 };
 
 }  // namespace MugLab::OfxBase

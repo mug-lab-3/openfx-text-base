@@ -22,8 +22,8 @@ class DragFeedbackUseCase : public PassiveUseCase {
                 const std::vector<std::string_view>& activeUseCases) -> UseCaseResult override;
 
     [[nodiscard]] auto declaredConsumedIntents() const -> std::vector<std::string_view> override {
-        return { "isDragging" };
+        return {"isDragging"};
     }
 };
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

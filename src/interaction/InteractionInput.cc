@@ -1,6 +1,7 @@
 #include "InteractionInput.h"
 
 #include <cmath>
+
 #include "ofxKeySyms.h"
 #include "ofxsInteract.h"
 

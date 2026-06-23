@@ -1,6 +1,8 @@
 #include "interaction/usecases/CursorHighlightUseCase.h"
-#include "overlay/OverlayRenderer.h"
+
 #include <array>
+
+#include "overlay/OverlayRenderer.h"
 
 namespace MugLab::OfxBase {
 
@@ -19,15 +21,13 @@ auto CursorHighlightUseCase::canHandle(const InteractionInput& input, const Snap
     return HandlingRole::None;
 }
 
-auto CursorHighlightUseCase::onDraw(OverlayRenderer& renderer, const SnapshotState& snapshot, const CurrentState& current,
+auto CursorHighlightUseCase::onDraw(OverlayRenderer& renderer, const SnapshotState& snapshot,
+                                    const CurrentState& current,
                                     const std::vector<std::string_view>& activeUseCases) -> UseCaseResult {
     double mx = current.mouseCanvas_.x;
     double my = current.canvasHeight_ - current.mouseCanvas_.y;
     double r = 40.0;
-    std::array<OfxPointD, 2> pts = {{
-        {.x = mx - r, .y = my - r},
-        {.x = mx + r, .y = my + r}
-    }};
+    std::array<OfxPointD, 2> pts = {{{.x = mx - r, .y = my - r}, {.x = mx + r, .y = my + r}}};
     OverlayRenderer::Color color = {.red_ = 1.0F, .green_ = 0.0F, .blue_ = 0.0F, .alpha_ = 1.0F};
     OverlayRenderer::Style style = {.color_ = color, .width_ = 2.0F};
     renderer.applyStyle(style);
@@ -35,5 +35,4 @@ auto CursorHighlightUseCase::onDraw(OverlayRenderer& renderer, const SnapshotSta
     return {.lifecycle_ = UseCaseLifecycle::Continue};
 }
 
-
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

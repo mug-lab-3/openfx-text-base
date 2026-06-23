@@ -1,6 +1,7 @@
 #pragma once
 
 #include <blend2d.h>
+
 #include "ofxCore.h"
 
 namespace MugLab::OfxBase::CoordTransform {
@@ -13,8 +14,7 @@ namespace MugLab::OfxBase::CoordTransform {
 inline auto canvasSizeFromRod(const OfxRectD& rod, int fallbackW, int fallbackH) -> BLSize {
     const double w = rod.x2 - rod.x1;
     const double h = rod.y2 - rod.y1;
-    return {(w > 0.0) ? w : static_cast<double>(fallbackW),
-            (h > 0.0) ? h : static_cast<double>(fallbackH)};
+    return {(w > 0.0) ? w : static_cast<double>(fallbackW), (h > 0.0) ? h : static_cast<double>(fallbackH)};
 }
 
 // OFX normalized position → Blend2D canvas pixel (absolute, canvas-relative).
@@ -33,8 +33,7 @@ inline auto blend2DToOfxNorm(double pixX, double pixY, const BLSize& canvas) -> 
 // bounds is the dstImage->getBounds() rect. Subtract its origin so the position is
 // relative to the top-left corner of the current render tile.
 inline auto canvasToTile(const BLPoint& canvasPx, const OfxRectI& bounds) -> BLPoint {
-    return {canvasPx.x - static_cast<double>(bounds.x1),
-            canvasPx.y - static_cast<double>(bounds.y1)};
+    return {canvasPx.x - static_cast<double>(bounds.x1), canvasPx.y - static_cast<double>(bounds.y1)};
 }
 
 // Full pipeline: OFX normalized → tile-relative Blend2D pixel.

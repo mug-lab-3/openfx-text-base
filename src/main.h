@@ -1,8 +1,8 @@
 #pragma once
 
+#include "interaction/UseCaseRouter.h"
 #include "ofxsImageEffect.h"
 #include "params/ParameterManager.h"
-#include "interaction/UseCaseRouter.h"
 
 class OfxBasePlugin : public OFX::ImageEffect {
    public:

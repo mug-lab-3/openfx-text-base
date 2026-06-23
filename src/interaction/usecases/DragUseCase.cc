@@ -1,7 +1,9 @@
 #include "interaction/usecases/DragUseCase.h"
+
+#include <cmath>
+
 #include "params/ParamIds.h"
 #include "params/ParameterManager.h"
-#include <cmath>
 
 namespace MugLab::OfxBase {
 
@@ -40,13 +42,12 @@ void DragUseCase::onFinish(SnapshotState& snapshot, ParameterManager& parameterM
     parameterManager.endEditBlock();
 }
 
-auto DragUseCase::penDown(const InteractionInput& input, SnapshotState& snapshot,
-                          ParameterManager& parameterManager,
+auto DragUseCase::penDown(const InteractionInput& input, SnapshotState& snapshot, ParameterManager& parameterManager,
                           const std::vector<std::string_view>& activeUseCases) -> UseCaseResult {
     UseCaseResult result;
     result.targetOperation_ = TargetItemOperation::Add;
     result.lifecycle_ = UseCaseLifecycle::Continue;
-    result.intents_["isDragging"] = IntentValues{ true };
+    result.intents_["isDragging"] = IntentValues{true};
     return result;
 }
 
@@ -63,21 +64,19 @@ auto DragUseCase::penMotion(const InteractionInput& input, SnapshotState& snapsh
 
     const BLPoint deltaCanvas = currentMousePos - snapshot.initialMouseCanvas_;
     const double deltaX = deltaCanvas.x / canvasSize.w;
-    const double deltaY = -deltaCanvas.y / canvasSize.h; // Flip Y-up
+    const double deltaY = -deltaCanvas.y / canvasSize.h;  // Flip Y-up
 
-    const ParamPoint2D newPos = {snapshot.initialGlobalPos_.x_ + deltaX,
-                                 snapshot.initialGlobalPos_.y_ + deltaY};
+    const ParamPoint2D newPos = {snapshot.initialGlobalPos_.x_ + deltaX, snapshot.initialGlobalPos_.y_ + deltaY};
 
     parameterManager.setDouble2D(ParamIds::kPosition, newPos, time);
 
     UseCaseResult result;
     result.lifecycle_ = UseCaseLifecycle::Continue;
-    result.intents_["isDragging"] = IntentValues{ true };
+    result.intents_["isDragging"] = IntentValues{true};
     return result;
 }
 
-auto DragUseCase::penUp(const InteractionInput& input, SnapshotState& snapshot,
-                        ParameterManager& parameterManager,
+auto DragUseCase::penUp(const InteractionInput& input, SnapshotState& snapshot, ParameterManager& parameterManager,
                         const std::vector<std::string_view>& activeUseCases) -> UseCaseResult {
     UseCaseResult result;
     result.lifecycle_ = UseCaseLifecycle::Terminate;
@@ -86,7 +85,7 @@ auto DragUseCase::penUp(const InteractionInput& input, SnapshotState& snapshot,
 }
 
 auto DragUseCase::declaredEmittedIntents() const -> std::vector<std::string_view> {
-    return { "isDragging" };
+    return {"isDragging"};
 }
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

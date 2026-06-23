@@ -51,7 +51,9 @@ void OpenCLCompositor::checkError(cl_int error, const char* message) {
 
 auto OpenCLCompositor::getKernel(cl_command_queue commandQueue) -> cl_kernel {
     auto it = kernelMap_.find(commandQueue);
-    if (it != kernelMap_.end()) { return it->second; }
+    if (it != kernelMap_.end()) {
+        return it->second;
+    }
 
     cl_int err;
     cl_context context = nullptr;
@@ -89,13 +91,18 @@ auto OpenCLCompositor::getOverlayBuffer(cl_command_queue commandQueue, cl_contex
         return it->second;
     }
     if (it != overlayBufferMap_.end()) {
-        if (it->second) { clReleaseMemObject(it->second); }
+        if (it->second) {
+            clReleaseMemObject(it->second);
+        }
         overlayBufferMap_.erase(it);
         overlayBufferSizeMap_.erase(commandQueue);
     }
     cl_int err;
     cl_mem buf = clCreateBuffer(context, CL_MEM_READ_ONLY, overlayBytes, nullptr, &err);
-    if (err != CL_SUCCESS) { checkError(err, "clCreateBuffer overlay"); return nullptr; }
+    if (err != CL_SUCCESS) {
+        checkError(err, "clCreateBuffer overlay");
+        return nullptr;
+    }
     overlayBufferMap_[commandQueue] = buf;
     overlayBufferSizeMap_[commandQueue] = overlayBytes;
     return buf;
@@ -103,55 +110,71 @@ auto OpenCLCompositor::getOverlayBuffer(cl_command_queue commandQueue, cl_contex
 
 OpenCLCompositor::~OpenCLCompositor() {
     std::lock_guard<std::mutex> lock(mutex_);
-    for (auto& [q, buf] : overlayBufferMap_) { if (buf) clReleaseMemObject(buf); }
-    for (auto& [q, k]   : kernelMap_)        { if (k)   clReleaseKernel(k); }
+    for (auto& [q, buf] : overlayBufferMap_) {
+        if (buf) clReleaseMemObject(buf);
+    }
+    for (auto& [q, k] : kernelMap_) {
+        if (k) clReleaseKernel(k);
+    }
 }
 
-auto OpenCLCompositor::composite(void* commandQueuePointer, const void* overlayPixels,
-                                  void* sourceBuffer, void* destinationBuffer,
-                                  int width, int height) -> bool {
+auto OpenCLCompositor::composite(void* commandQueuePointer, const void* overlayPixels, void* sourceBuffer,
+                                 void* destinationBuffer, int width, int height) -> bool {
     auto* commandQueue = static_cast<cl_command_queue>(commandQueuePointer);
     std::lock_guard<std::mutex> lock(mutex_);
 
     cl_kernel kernel = getKernel(commandQueue);
-    if (kernel == nullptr) { return false; }
+    if (kernel == nullptr) {
+        return false;
+    }
 
     cl_context context = nullptr;
     clGetCommandQueueInfo(commandQueue, CL_QUEUE_CONTEXT, sizeof(context), &context, nullptr);
 
     const size_t overlayBytes = static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
     cl_mem overlayBuf = getOverlayBuffer(commandQueue, context, overlayBytes);
-    if (overlayBuf == nullptr) { return false; }
+    if (overlayBuf == nullptr) {
+        return false;
+    }
 
-    cl_int err = clEnqueueWriteBuffer(commandQueue, overlayBuf, CL_TRUE, 0,
-                                      overlayBytes, overlayPixels, 0, nullptr, nullptr);
-    if (err != CL_SUCCESS) { checkError(err, "clEnqueueWriteBuffer overlay"); return false; }
+    cl_int err =
+        clEnqueueWriteBuffer(commandQueue, overlayBuf, CL_TRUE, 0, overlayBytes, overlayPixels, 0, nullptr, nullptr);
+    if (err != CL_SUCCESS) {
+        checkError(err, "clEnqueueWriteBuffer overlay");
+        return false;
+    }
 
-    auto* dst    = static_cast<cl_mem>(destinationBuffer);
+    auto* dst = static_cast<cl_mem>(destinationBuffer);
     auto* srcMem = sourceBuffer ? static_cast<cl_mem>(sourceBuffer) : dst;
-    int   hasSrc = sourceBuffer ? 1 : 0;
+    int hasSrc = sourceBuffer ? 1 : 0;
 
     int argIdx = 0;
-    err  = clSetKernelArg(kernel, argIdx++, sizeof(cl_mem), &dst);
+    err = clSetKernelArg(kernel, argIdx++, sizeof(cl_mem), &dst);
     err |= clSetKernelArg(kernel, argIdx++, sizeof(cl_mem), &srcMem);
     err |= clSetKernelArg(kernel, argIdx++, sizeof(cl_mem), &overlayBuf);
-    err |= clSetKernelArg(kernel, argIdx++, sizeof(int),    &width);
-    err |= clSetKernelArg(kernel, argIdx++, sizeof(int),    &height);
-    err |= clSetKernelArg(kernel, argIdx++, sizeof(int),    &hasSrc);
-    if (err != CL_SUCCESS) { checkError(err, "clSetKernelArg"); return false; }
+    err |= clSetKernelArg(kernel, argIdx++, sizeof(int), &width);
+    err |= clSetKernelArg(kernel, argIdx++, sizeof(int), &height);
+    err |= clSetKernelArg(kernel, argIdx++, sizeof(int), &hasSrc);
+    if (err != CL_SUCCESS) {
+        checkError(err, "clSetKernelArg");
+        return false;
+    }
 
     constexpr size_t kTile = 16;
-    size_t local[2]  = {kTile, kTile};
-    size_t global[2] = {(static_cast<size_t>(width)  + kTile - 1) / kTile * kTile,
+    size_t local[2] = {kTile, kTile};
+    size_t global[2] = {(static_cast<size_t>(width) + kTile - 1) / kTile * kTile,
                         (static_cast<size_t>(height) + kTile - 1) / kTile * kTile};
     err = clEnqueueNDRangeKernel(commandQueue, kernel, 2, nullptr, global, local, 0, nullptr, nullptr);
-    if (err != CL_SUCCESS) { checkError(err, "clEnqueueNDRangeKernel"); return false; }
+    if (err != CL_SUCCESS) {
+        checkError(err, "clEnqueueNDRangeKernel");
+        return false;
+    }
     clFlush(commandQueue);
     return true;
 }
 
-auto OpenCLCompositor::copyHostToDevice(void* commandQueuePointer, const void* hostPixels,
-                                         void* destinationBuffer, int width, int height) -> bool {
+auto OpenCLCompositor::copyHostToDevice(void* commandQueuePointer, const void* hostPixels, void* destinationBuffer,
+                                        int width, int height) -> bool {
     auto* commandQueue = static_cast<cl_command_queue>(commandQueuePointer);
     auto* dst = static_cast<cl_mem>(destinationBuffer);
     const size_t bytes = static_cast<size_t>(width) * static_cast<size_t>(height) * 4 * sizeof(float);

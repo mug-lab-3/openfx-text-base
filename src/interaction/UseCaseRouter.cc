@@ -4,35 +4,31 @@
 #include <functional>
 #include <typeindex>
 
-#include "interaction/StateFactory.h"
-#include "interaction/PassiveUseCase.h"
-#include "interaction/KeyUseCase.h"
+#include "debugger/LogManager.h"
 #include "interaction/CommandUseCase.h"
-#include "overlay/OverlayRenderer.h"
-#include "interaction/usecases/DragUseCase.h"
+#include "interaction/KeyUseCase.h"
+#include "interaction/PassiveUseCase.h"
+#include "interaction/StateFactory.h"
 #include "interaction/usecases/CursorHighlightUseCase.h"
-#include "interaction/usecases/GrabableAreaDisplayUseCase.h"
 #include "interaction/usecases/DragFeedbackUseCase.h"
+#include "interaction/usecases/DragUseCase.h"
+#include "interaction/usecases/GrabableAreaDisplayUseCase.h"
 #include "interaction/usecases/ResetPositionAndSizeCommand.h"
 #include "interaction/usecases/ResetPositionAndSizeKeyUseCase.h"
-#include "debugger/LogManager.h"
+#include "overlay/OverlayRenderer.h"
 #include "params/ParameterManager.h"
 
 namespace MugLab::OfxBase {
 
 UseCaseRouter::UseCaseRouter() {
-    factories_.emplace_back([this]() -> std::unique_ptr<InteractionUseCase> {
-        return std::make_unique<DragUseCase>();
-    });
-    factories_.emplace_back([this]() -> std::unique_ptr<InteractionUseCase> {
-        return std::make_unique<CursorHighlightUseCase>();
-    });
-    factories_.emplace_back([this]() -> std::unique_ptr<InteractionUseCase> {
-        return std::make_unique<GrabableAreaDisplayUseCase>();
-    });
-    factories_.emplace_back([this]() -> std::unique_ptr<InteractionUseCase> {
-        return std::make_unique<DragFeedbackUseCase>();
-    });
+    factories_.emplace_back(
+        [this]() -> std::unique_ptr<InteractionUseCase> { return std::make_unique<DragUseCase>(); });
+    factories_.emplace_back(
+        [this]() -> std::unique_ptr<InteractionUseCase> { return std::make_unique<CursorHighlightUseCase>(); });
+    factories_.emplace_back(
+        [this]() -> std::unique_ptr<InteractionUseCase> { return std::make_unique<GrabableAreaDisplayUseCase>(); });
+    factories_.emplace_back(
+        [this]() -> std::unique_ptr<InteractionUseCase> { return std::make_unique<DragFeedbackUseCase>(); });
 
     commandUseCases_.emplace_back(std::make_unique<ResetPositionAndSizeCommand>());
 
@@ -78,7 +74,8 @@ void UseCaseRouter::update(const InteractionInput& input, ParameterManager& para
     activateUseCases(input, parameterManager, ActivationTrigger::Any);
 }
 
-void UseCaseRouter::onDraw(OverlayRenderer& overlayRenderer, const CurrentState& current, ParameterManager& parameterManager) {
+void UseCaseRouter::onDraw(OverlayRenderer& overlayRenderer, const CurrentState& current,
+                           ParameterManager& parameterManager) {
     checkLayoutUpdate(parameterManager);
     dispatchEvents(
         parameterManager, [&](ActiveUseCase& active, const std::vector<std::string_view>& names) -> UseCaseResult {
@@ -289,9 +286,10 @@ void UseCaseRouter::logIntents() const {
 
 auto UseCaseRouter::dispatchPenDown(const InteractionInput& input, ParameterManager& parameterManager) -> bool {
     activateUseCases(input, parameterManager, ActivationTrigger::PenDown);
-    const bool result = dispatchEvents(parameterManager, [&](ActiveUseCase& active, const std::vector<std::string_view>& names) -> UseCaseResult {
-        return active.useCase_->penDown(input, active.snapshot_, parameterManager, names);
-    });
+    const bool result = dispatchEvents(
+        parameterManager, [&](ActiveUseCase& active, const std::vector<std::string_view>& names) -> UseCaseResult {
+            return active.useCase_->penDown(input, active.snapshot_, parameterManager, names);
+        });
     activateUseCases(input, parameterManager, ActivationTrigger::PenDown);
     return result;
 }
@@ -490,9 +488,9 @@ void UseCaseRouter::activateUseCases(const InteractionInput& input, ParameterMan
                                      ActivationTrigger trigger) {
     const OfxPointD mouseOfx = {input.mousePos().x, input.mousePos().y};
     const SnapshotState currentSnapshot = StateFactory::createSnapshot(
-        input.time(), input.canvasSize().w, input.canvasSize().h,
-        {input.renderScale().x, input.renderScale().y}, input.mousePos(), mouseOfx,
-        parameterManager.getSelectionMode(input.time()), getCurrentSelection(), input.modifiers(), parameterManager);
+        input.time(), input.canvasSize().w, input.canvasSize().h, {input.renderScale().x, input.renderScale().y},
+        input.mousePos(), mouseOfx, parameterManager.getSelectionMode(input.time()), getCurrentSelection(),
+        input.modifiers(), parameterManager);
 
     std::vector<PotentialUseCase> candidates;
     const std::vector<std::string_view> activeNames = getActiveUseCaseNames();

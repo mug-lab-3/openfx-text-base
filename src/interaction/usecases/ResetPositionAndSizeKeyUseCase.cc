@@ -1,4 +1,5 @@
 #include "interaction/usecases/ResetPositionAndSizeKeyUseCase.h"
+
 #include "interaction/InteractionInput.h"
 #include "interaction/usecases/ResetPositionAndSizeCommand.h"
 #include "ofxKeySyms.h"

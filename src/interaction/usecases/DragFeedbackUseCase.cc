@@ -1,6 +1,8 @@
 #include "interaction/usecases/DragFeedbackUseCase.h"
-#include "overlay/OverlayRenderer.h"
+
 #include <array>
+
+#include "overlay/OverlayRenderer.h"
 
 namespace MugLab::OfxBase {
 

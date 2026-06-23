@@ -25,8 +25,8 @@ class MetalCompositor {
     auto getSharedOverlayPixels(void* commandQueue, int width, int height) -> void*;
 
     // Composites using the shared buffer previously returned by getSharedOverlayPixels().
-    auto compositeShared(void* commandQueue, void* sourceBuffer, void* destinationBuffer,
-                         int width, int height) -> bool;
+    auto compositeShared(void* commandQueue, void* sourceBuffer, void* destinationBuffer, int width,
+                         int height) -> bool;
 
    private:
     static constexpr int kBuffersPerEntry = 2;
@@ -34,10 +34,10 @@ class MetalCompositor {
 
     struct BufferCache {
         void* metalBuffer_[kBuffersPerEntry] = {nullptr, nullptr};
-        void* lastCommit_[kBuffersPerEntry]  = {nullptr, nullptr};
-        int   width_   = 0;
-        int   height_  = 0;
-        int   current_ = 0;
+        void* lastCommit_[kBuffersPerEntry] = {nullptr, nullptr};
+        int width_ = 0;
+        int height_ = 0;
+        int current_ = 0;
         uint64_t lastUsed_ = 0;
     };
 

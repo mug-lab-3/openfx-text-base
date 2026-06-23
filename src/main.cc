@@ -14,22 +14,20 @@
 
 #include <blend2d.h>
 
+#include "Version.h"
+#include "debugger/LogManager.h"
+#include "font/FontManager.h"
+#include "interaction/Interact.h"
+#include "main.h"
 #include "ofxDrawSuite.h"
 #include "ofxsImageEffect.h"
 #include "ofxsInteract.h"
-
-#include "debugger/LogManager.h"
-#include "font/FontManager.h"
-#include "main.h"
 #include "render/Renderer.h"
-#include "Version.h"
-#include "interaction/Interact.h"
 
 // ==============================================================================
 // OfxBasePlugin
 // ==============================================================================
-OfxBasePlugin::OfxBasePlugin(OfxImageEffectHandle handle)
-    : OFX::ImageEffect(handle), params_(*this) {
+OfxBasePlugin::OfxBasePlugin(OfxImageEffectHandle handle) : OFX::ImageEffect(handle), params_(*this) {
     LOG_INFO("LIFECYCLE_INSTANCE_CREATE", "handle", reinterpret_cast<uint64_t>(handle));
     dstClip_ = fetchClip(kOfxImageEffectOutputClipName);
     srcClip_ = fetchClip(kOfxImageEffectSimpleSourceClipName);
@@ -43,7 +41,9 @@ OfxBasePlugin::~OfxBasePlugin() {
 void OfxBasePlugin::changedParam(const OFX::InstanceChangedArgs& args, const std::string& paramName) {
     // Skip eChangeTime to avoid redundant UI refreshes while the timeline is playing.
     // Visibility only needs updating when the user actually edits a parameter.
-    if (args.reason == OFX::eChangeTime) { return; }
+    if (args.reason == OFX::eChangeTime) {
+        return;
+    }
     LOG_INFO("EVENT_PARAM_CHANGED", "param", paramName, "reason", static_cast<int>(args.reason));
     params_.updateVisibility(args.time);
     if (commandRouter_.isCommandTrigger(paramName)) {
@@ -68,7 +68,7 @@ void OfxBasePlugin::render(const OFX::RenderArguments& args) {
 // OfxBaseOverlayDescriptor: wires up Interact via V2 entry point
 // ==============================================================================
 class OfxBaseOverlayDescriptor : public OFX::EffectOverlayDescriptor,
-                              public OFX::InteractMainEntry<OfxBaseOverlayDescriptor> {
+                                 public OFX::InteractMainEntry<OfxBaseOverlayDescriptor> {
    public:
     using InteractMainEntry<OfxBaseOverlayDescriptor>::overlayInteractMainEntry;
 
@@ -83,11 +83,12 @@ class OfxBaseOverlayDescriptor : public OFX::EffectOverlayDescriptor,
 };
 
 // Injects DrawContext into Interact before draw() is called (V2 protocol).
-static auto ofxBaseInteractEntryV2(const char* action, const void* handle,
-                                OfxPropertySetHandle inArgs,
-                                OfxPropertySetHandle outArgs) -> OfxStatus {
-    static auto* interactSuite = const_cast<OfxInteractSuiteV1*>(static_cast<const OfxInteractSuiteV1*>(OFX::fetchSuite(kOfxInteractSuite, 1, true)));
-    static auto* propSuite     = const_cast<OfxPropertySuiteV1*>(static_cast<const OfxPropertySuiteV1*>(OFX::fetchSuite(kOfxPropertySuite, 1, true)));
+static auto ofxBaseInteractEntryV2(const char* action, const void* handle, OfxPropertySetHandle inArgs,
+                                   OfxPropertySetHandle outArgs) -> OfxStatus {
+    static auto* interactSuite = const_cast<OfxInteractSuiteV1*>(
+        static_cast<const OfxInteractSuiteV1*>(OFX::fetchSuite(kOfxInteractSuite, 1, true)));
+    static auto* propSuite = const_cast<OfxPropertySuiteV1*>(
+        static_cast<const OfxPropertySuiteV1*>(OFX::fetchSuite(kOfxPropertySuite, 1, true)));
 
     if ((interactSuite == nullptr) || (propSuite == nullptr)) {
         return kOfxStatErrMissingHostFeature;
@@ -96,7 +97,8 @@ static auto ofxBaseInteractEntryV2(const char* action, const void* handle,
     MugLab::OfxBase::Interact* interact = nullptr;
     if (handle != nullptr) {
         OfxPropertySetHandle interactPropSet = nullptr;
-        interactSuite->interactGetPropertySet(static_cast<OfxInteractHandle>(const_cast<void*>(handle)), &interactPropSet);
+        interactSuite->interactGetPropertySet(static_cast<OfxInteractHandle>(const_cast<void*>(handle)),
+                                              &interactPropSet);
         if (interactPropSet != nullptr) {
             void* data = nullptr;
             propSuite->propGetPointer(interactPropSet, kOfxPropInstanceData, 0, &data);
@@ -134,7 +136,8 @@ static auto ofxBaseInteractEntryV2(const char* action, const void* handle,
 class OfxBasePluginFactory : public OFX::PluginFactoryHelper<OfxBasePluginFactory> {
    public:
     OfxBasePluginFactory(const std::string& id, unsigned int verMaj, unsigned int verMin)
-        : OFX::PluginFactoryHelper<OfxBasePluginFactory>(id, verMaj, verMin) {}
+        : OFX::PluginFactoryHelper<OfxBasePluginFactory>(id, verMaj, verMin) {
+    }
 
     void load() override {
         LOG_INFO("LIFECYCLE_LOAD", "plugin_id", "com.muglab.ofxbase");
@@ -197,8 +200,7 @@ class OfxBasePluginFactory : public OFX::PluginFactoryHelper<OfxBasePluginFactor
 
 namespace OFX::Plugin {
 void getPluginIDs(OFX::PluginFactoryArray& ids) {
-    static OfxBasePluginFactory factory("com.muglab.ofxbase",
-                                        MugLab::OfxBase::kVersionMajor,
+    static OfxBasePluginFactory factory("com.muglab.ofxbase", MugLab::OfxBase::kVersionMajor,
                                         MugLab::OfxBase::kVersionMinor);
     ids.push_back(&factory);
 }

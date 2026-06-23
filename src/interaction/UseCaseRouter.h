@@ -9,10 +9,10 @@
 #include <unordered_set>
 #include <vector>
 
-#include "interaction/Intent.h"
-#include "interaction/SnapshotState.h"
 #include "interaction/CurrentState.h"
+#include "interaction/Intent.h"
 #include "interaction/InteractionUseCase.h"
+#include "interaction/SnapshotState.h"
 
 namespace MugLab::OfxBase {
 
@@ -124,4 +124,4 @@ class UseCaseRouter {
     IntentRegistry mergedIntents_;
 };
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

@@ -2,10 +2,12 @@
 
 #include <blend2d.h>
 #include <ofxCore.h>
+
 #include <vector>
-#include "interaction/SelectionItem.h"
+
 #include "interaction/HandlingRole.h"
 #include "interaction/Intent.h"
+#include "interaction/SelectionItem.h"
 #include "params/core/Types.h"
 
 namespace MugLab::OfxBase {
@@ -34,4 +36,4 @@ struct SnapshotState {
     double initialFontSize_ = 0.0;
 };
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

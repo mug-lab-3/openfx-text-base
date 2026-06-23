@@ -20,7 +20,6 @@ class CursorHighlightUseCase : public PassiveUseCase {
 
     auto onDraw(OverlayRenderer& renderer, const SnapshotState& snapshot, const CurrentState& current,
                 const std::vector<std::string_view>& activeUseCases) -> UseCaseResult override;
-
 };
 
-} // namespace MugLab::OfxBase
+}  // namespace MugLab::OfxBase

@@ -2,11 +2,10 @@
 
 #include <string>
 
-#include "ofxsImageEffect.h"
 #include "core/RootParameterGroup.h"
 #include "core/Types.h"
-
 #include "interaction/SelectionItem.h"
+#include "ofxsImageEffect.h"
 
 namespace MugLab::OfxBase {
 
@@ -15,8 +14,8 @@ namespace MugLab::OfxBase {
 // declarations and command/key use cases that reset values to defaults.
 // ---------------------------------------------------------------------------
 inline constexpr ParamPoint2D kDefaultPosition{.x_ = 0.5, .y_ = 0.5};
-inline constexpr double       kDefaultSize     = 1.0;
-inline constexpr double       kDefaultFontSize = 40.0;
+inline constexpr double kDefaultSize = 1.0;
+inline constexpr double kDefaultFontSize = 40.0;
 
 // ParameterManager owns the full parameter tree for one plugin instance.
 // Usage:
@@ -38,17 +37,20 @@ class ParameterManager {
     // Value getters — one per value type, identified by ParamIds constant.
     // Returns fallback when the parameter is not found.
     // ---------------------------------------------------------------------------
-    [[nodiscard]] auto getString (const std::string& id, double time, const std::string&  fallback = {})          const -> std::string;
-    [[nodiscard]] auto getDouble (const std::string& id, double time, double               fallback = 0.0)        const -> double;
-    [[nodiscard]] auto getDouble2D(const std::string& id, double time, const ParamPoint2D& fallback = {})         const -> ParamPoint2D;
-    [[nodiscard]] auto getBool   (const std::string& id, double time, bool                 fallback = false)      const -> bool;
-    [[nodiscard]] auto getChoice (const std::string& id, double time, int                  fallback = 0)          const -> int;
-    [[nodiscard]] auto getRGBA   (const std::string& id, double time, const ParamRGBA&     fallback = {})         const -> ParamRGBA;
+    [[nodiscard]] auto getString(const std::string& id, double time,
+                                 const std::string& fallback = {}) const -> std::string;
+    [[nodiscard]] auto getDouble(const std::string& id, double time, double fallback = 0.0) const -> double;
+    [[nodiscard]] auto getDouble2D(const std::string& id, double time,
+                                   const ParamPoint2D& fallback = {}) const -> ParamPoint2D;
+    [[nodiscard]] auto getBool(const std::string& id, double time, bool fallback = false) const -> bool;
+    [[nodiscard]] auto getChoice(const std::string& id, double time, int fallback = 0) const -> int;
+    [[nodiscard]] auto getRGBA(const std::string& id, double time, const ParamRGBA& fallback = {}) const -> ParamRGBA;
 
     [[nodiscard]] auto getSelectionMode(double time) const -> SelectionMode;
 
     // Convenience: resolves a ChoiceParameter index to its option string.
-    [[nodiscard]] auto getChoiceOption(const std::string& id, double time, const std::string& fallback = {}) const -> std::string;
+    [[nodiscard]] auto getChoiceOption(const std::string& id, double time,
+                                       const std::string& fallback = {}) const -> std::string;
 
     // Value setters
     void setDouble(const std::string& id, double value, double time);

@@ -11,25 +11,25 @@ namespace MugLab::OfxBase::ParamIds {
 // ---------------------------------------------------------------------------
 inline constexpr const char* kPageSelect = "pageSelect";
 
-inline constexpr const char* kPageText   = "Text";
+inline constexpr const char* kPageText = "Text";
 inline constexpr const char* kPageLayout = "Layout";
-inline constexpr const char* kPageStyle  = "Style";
+inline constexpr const char* kPageStyle = "Style";
 
 // ---------------------------------------------------------------------------
 // Text page
 // ---------------------------------------------------------------------------
-inline constexpr const char* kTextGroup   = "textGroup";
+inline constexpr const char* kTextGroup = "textGroup";
 inline constexpr const char* kTextContent = "textContent";
-inline constexpr const char* kFontName    = "fontName";
-inline constexpr const char* kFontSize    = "fontSize";
+inline constexpr const char* kFontName = "fontName";
+inline constexpr const char* kFontSize = "fontSize";
 
 // ---------------------------------------------------------------------------
 // Layout page
 // ---------------------------------------------------------------------------
-inline constexpr const char* kLayoutGroup            = "layoutGroup";
-inline constexpr const char* kPosition               = "position";
-inline constexpr const char* kSize                   = "size";
-inline constexpr const char* kResetPositionAndSize   = "resetPositionAndSize";
+inline constexpr const char* kLayoutGroup = "layoutGroup";
+inline constexpr const char* kPosition = "position";
+inline constexpr const char* kSize = "size";
+inline constexpr const char* kResetPositionAndSize = "resetPositionAndSize";
 
 // ---------------------------------------------------------------------------
 // Style page
@@ -37,12 +37,12 @@ inline constexpr const char* kResetPositionAndSize   = "resetPositionAndSize";
 //   kColor is visible only when BOTH kPageSelect == "Style"
 //   AND kUseCustomColor == true (AND logic).
 // ---------------------------------------------------------------------------
-inline constexpr const char* kStyleGroup      = "styleGroup";
-inline constexpr const char* kUseCustomColor  = "useCustomColor";
-inline constexpr const char* kColor           = "color";
+inline constexpr const char* kStyleGroup = "styleGroup";
+inline constexpr const char* kUseCustomColor = "useCustomColor";
+inline constexpr const char* kColor = "color";
 // kOpacity is visible whenever kPageSelect == "Style",
 // regardless of kUseCustomColor (single-condition, always shown on style page).
-inline constexpr const char* kOpacity         = "opacity";
+inline constexpr const char* kOpacity = "opacity";
 
 // ---------------------------------------------------------------------------
 // Shadow slots (Style page)
@@ -52,10 +52,10 @@ inline constexpr const char* kOpacity         = "opacity";
 //   auto& grp = root_.findParameter<GroupParameter>("shadowGroup0");
 //   grp.getParameter<BooleanParameter>(ShadowSlot::kEnabled)->get(time);
 // ---------------------------------------------------------------------------
-inline constexpr const char* kShadowGroupPrefix   = "shadowGroup";    // + "0", "1", ...
+inline constexpr const char* kShadowGroupPrefix = "shadowGroup";      // + "0", "1", ...
 inline constexpr const char* kShadowEnabledPrefix = "shadowEnabled";  // + "0", "1", ...
-inline constexpr const char* kShadowOffsetPrefix  = "shadowOffset";   // + "0", "1", ...
-inline constexpr const char* kShadowColorPrefix   = "shadowColor";    // + "0", "1", ...
+inline constexpr const char* kShadowOffsetPrefix = "shadowOffset";    // + "0", "1", ...
+inline constexpr const char* kShadowColorPrefix = "shadowColor";      // + "0", "1", ...
 
 inline constexpr int kShadowSlotCount = 2;
 
@@ -66,7 +66,7 @@ inline constexpr int kShadowSlotCount = 2;
 namespace MugLab::OfxBase {
 enum class ShadowSlot : int {
     kEnabled = 0,
-    kOffset  = 1,
-    kColor   = 2,
+    kOffset = 1,
+    kColor = 2,
 };
 }  // namespace MugLab::OfxBase
