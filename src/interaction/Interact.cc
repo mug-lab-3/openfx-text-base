@@ -66,9 +66,7 @@ auto Interact::penMotion(const OFX::PenArgs& args) -> bool {
     CurrentState current = StateFactory::createCurrent(args.time, input_.canvasWidth(), input_.canvasHeight(),
                                                          {1.0, 1.0}, useCaseRouter_, input_, parameterManager_);
     const bool handled = useCaseRouter_.onPenMotion(input_, current, parameterManager_);
-    if (handled) {
-        triggerRedraw();
-    }
+    triggerRedraw();
     return handled;
 }
 
