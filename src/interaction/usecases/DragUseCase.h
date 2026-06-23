@@ -32,6 +32,7 @@ class DragUseCase : public InteractionUseCase {
                const std::vector<std::string_view>& activeUseCases) -> UseCaseResult override;
 
     [[nodiscard]] auto declaredEmittedIntents() const -> std::vector<std::string_view> override;
+    [[nodiscard]] auto declaredConsumedIntents() const -> std::vector<std::string_view> override;
 };
 
 }  // namespace MugLab::OfxBase

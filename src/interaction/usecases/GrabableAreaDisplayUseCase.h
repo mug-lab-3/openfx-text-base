@@ -20,6 +20,10 @@ class GrabableAreaDisplayUseCase : public PassiveUseCase {
 
     auto onDraw(OverlayRenderer& renderer, const SnapshotState& snapshot, const CurrentState& current,
                 const std::vector<std::string_view>& activeUseCases) -> UseCaseResult override;
+
+    [[nodiscard]] auto declaredEmittedIntents() const -> std::vector<std::string_view> override {
+        return {"isInGrabArea"};
+    }
 };
 
 }  // namespace MugLab::OfxBase

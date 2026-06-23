@@ -20,7 +20,7 @@ auto GrabableAreaDisplayUseCase::canHandle(const InteractionInput& input, const 
     const double mouseNormY = 1.0 - (input.mousePos().y / input.canvasHeight());
     const double dx = mouseNormX - current.initialGlobalPos_.x_;
     const double dy = mouseNormY - current.initialGlobalPos_.y_;
-    const bool inRange = (std::sqrt((dx * dx) + (dy * dy)) < 0.15);
+    const bool inRange = (std::abs(dx) < 0.15 && std::abs(dy) < 0.15);
 
     return inRange ? HandlingRole::Passive : HandlingRole::None;
 }
@@ -44,7 +44,7 @@ auto GrabableAreaDisplayUseCase::onDraw(OverlayRenderer& renderer, const Snapsho
     renderer.applyStyle(boxStyle);
     renderer.draw(PrimitiveType::LineLoop, rectPts.data(), static_cast<int>(rectPts.size()));
 
-    return {.lifecycle_ = UseCaseLifecycle::Continue};
+    return {.lifecycle_ = UseCaseLifecycle::Continue, .intents_ = {{"isInGrabArea", IntentValues{true}}}};
 }
 
 }  // namespace MugLab::OfxBase

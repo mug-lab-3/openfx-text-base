@@ -1,7 +1,5 @@
 #include "interaction/usecases/DragUseCase.h"
 
-#include <cmath>
-
 #include "params/ParamIds.h"
 #include "params/ParameterManager.h"
 
@@ -16,22 +14,10 @@ auto DragUseCase::name() const -> std::string_view {
 auto DragUseCase::canHandle(const InteractionInput& input, const SnapshotState& current,
                             const SnapshotState* activationSnapshot,
                             const std::vector<std::string_view>& activeUseCases) const -> HandlingRole {
-    HandlingRole role = HandlingRole::None;
     if (activationSnapshot != nullptr) {
-        role = HandlingRole::Primary;
-    } else {
-        if (current.selectionMode_ == SelectionMode::Global) {
-            ParamPoint2D currentPos = current.initialGlobalPos_;
-            double mouseNormX = current.initialMouseCanvas_.x / current.canvasWidth_;
-            double mouseNormY = 1.0 - (current.initialMouseCanvas_.y / current.canvasHeight_);
-            double dx = mouseNormX - currentPos.x_;
-            double dy = mouseNormY - currentPos.y_;
-            if (std::sqrt(dx * dx + dy * dy) < 0.15) {
-                role = HandlingRole::Primary;
-            }
-        }
+        return HandlingRole::Primary;
     }
-    return role;
+    return current.intents_.has("isInGrabArea") ? HandlingRole::Primary : HandlingRole::None;
 }
 
 void DragUseCase::onStart(SnapshotState& snapshot, ParameterManager& parameterManager) {
@@ -86,6 +72,10 @@ auto DragUseCase::penUp(const InteractionInput& input, SnapshotState& snapshot, 
 
 auto DragUseCase::declaredEmittedIntents() const -> std::vector<std::string_view> {
     return {"isDragging"};
+}
+
+auto DragUseCase::declaredConsumedIntents() const -> std::vector<std::string_view> {
+    return {"isInGrabArea"};
 }
 
 }  // namespace MugLab::OfxBase
