@@ -95,7 +95,7 @@ See [3rdparty-licenses.md](3rdparty-licenses.md) for the full license text of ea
     │   ├── UseCaseRouter.h/cc   # UseCase lifecycle management and event routing
     │   ├── InteractionUseCase.h/cc  # UseCase base class
     │   ├── CurrentState.h / SnapshotState.h  # Runtime state and snapshot
-    │   └── usecases/            # Concrete UseCase implementations (Drag / Highlight / DragFeedback etc.)
+    │   └── usecases/            # Concrete UseCase implementations (Drag / Highlight / DragFeedback / Command / Key etc.)
     ├── overlay/                 # Overlay rendering
     │   ├── OverlayRenderer.h    # Rendering interface
     │   ├── OfxDrawSuiteRenderer # OFX Draw Suite implementation

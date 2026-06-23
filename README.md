@@ -97,7 +97,7 @@
     │   ├── UseCaseRouter.h/cc   # UseCase のライフサイクル管理・イベントルーティング
     │   ├── InteractionUseCase.h/cc  # UseCase 基底クラス
     │   ├── CurrentState.h / SnapshotState.h  # 実行時状態・スナップショット
-    │   └── usecases/            # 具体的な UseCase 実装（Drag / Highlight / DragFeedback など）
+    │   └── usecases/            # 具体的な UseCase 実装（Drag / Highlight / DragFeedback / Command / Key など）
     ├── overlay/                 # オーバーレイ描画
     │   ├── OverlayRenderer.h    # 描画インタフェース
     │   ├── OfxDrawSuiteRenderer # OFX Draw Suite 実装
