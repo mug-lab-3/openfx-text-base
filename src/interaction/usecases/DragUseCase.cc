@@ -1,17 +1,17 @@
-#include "interaction/usecases/MoveUseCase.h"
+#include "interaction/usecases/DragUseCase.h"
 #include "params/ParamIds.h"
 #include "params/ParameterManager.h"
 #include <cmath>
 
 namespace MugLab::OfxBase {
 
-MoveUseCase::MoveUseCase() = default;
+DragUseCase::DragUseCase() = default;
 
-auto MoveUseCase::name() const -> std::string_view {
-    return "MoveUseCase";
+auto DragUseCase::name() const -> std::string_view {
+    return "DragUseCase";
 }
 
-auto MoveUseCase::canHandle(const InteractionInput& input, const SnapshotState& current,
+auto DragUseCase::canHandle(const InteractionInput& input, const SnapshotState& current,
                             const SnapshotState* activationSnapshot,
                             const std::vector<std::string_view>& activeUseCases) const -> HandlingRole {
     HandlingRole role = HandlingRole::None;
@@ -20,7 +20,6 @@ auto MoveUseCase::canHandle(const InteractionInput& input, const SnapshotState& 
     } else {
         if (current.selectionMode_ == SelectionMode::Global) {
             ParamPoint2D currentPos = current.initialGlobalPos_;
-            // Normalize mouse position
             double mouseNormX = current.initialMouseCanvas_.x / current.canvasWidth_;
             double mouseNormY = 1.0 - (current.initialMouseCanvas_.y / current.canvasHeight_);
             double dx = mouseNormX - currentPos.x_;
@@ -33,15 +32,15 @@ auto MoveUseCase::canHandle(const InteractionInput& input, const SnapshotState& 
     return role;
 }
 
-void MoveUseCase::onStart(SnapshotState& snapshot, ParameterManager& parameterManager) {
-    parameterManager.beginEditBlock("Move");
+void DragUseCase::onStart(SnapshotState& snapshot, ParameterManager& parameterManager) {
+    parameterManager.beginEditBlock("Drag");
 }
 
-void MoveUseCase::onFinish(SnapshotState& snapshot, ParameterManager& parameterManager) {
+void DragUseCase::onFinish(SnapshotState& snapshot, ParameterManager& parameterManager) {
     parameterManager.endEditBlock();
 }
 
-auto MoveUseCase::penDown(const InteractionInput& input, SnapshotState& snapshot,
+auto DragUseCase::penDown(const InteractionInput& input, SnapshotState& snapshot,
                           ParameterManager& parameterManager,
                           const std::vector<std::string_view>& activeUseCases) -> UseCaseResult {
     UseCaseResult result;
@@ -51,7 +50,7 @@ auto MoveUseCase::penDown(const InteractionInput& input, SnapshotState& snapshot
     return result;
 }
 
-auto MoveUseCase::penMotion(const InteractionInput& input, SnapshotState& snapshot, const CurrentState& current,
+auto DragUseCase::penMotion(const InteractionInput& input, SnapshotState& snapshot, const CurrentState& current,
                             ParameterManager& parameterManager,
                             const std::vector<std::string_view>& activeUseCases) -> UseCaseResult {
     if (current.selectionMode_ != SelectionMode::Global) {
@@ -77,7 +76,7 @@ auto MoveUseCase::penMotion(const InteractionInput& input, SnapshotState& snapsh
     return result;
 }
 
-auto MoveUseCase::penUp(const InteractionInput& input, SnapshotState& snapshot,
+auto DragUseCase::penUp(const InteractionInput& input, SnapshotState& snapshot,
                         ParameterManager& parameterManager,
                         const std::vector<std::string_view>& activeUseCases) -> UseCaseResult {
     UseCaseResult result;
@@ -86,7 +85,7 @@ auto MoveUseCase::penUp(const InteractionInput& input, SnapshotState& snapshot,
     return result;
 }
 
-auto MoveUseCase::declaredEmittedIntents() const -> std::vector<std::string_view> {
+auto DragUseCase::declaredEmittedIntents() const -> std::vector<std::string_view> {
     return { "isDragging" };
 }
 

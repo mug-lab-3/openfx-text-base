@@ -257,7 +257,7 @@ add_library(OfxBase SHARED
     src/overlay/OverlayRenderer.cc
     src/overlay/OfxDrawSuiteRenderer.cc
     # src/overlay/OpenGLRenderer.cc
-    src/interaction/usecases/MoveUseCase.cc
+    src/interaction/usecases/DragUseCase.cc
     src/interaction/usecases/CursorHighlightUseCase.cc
     src/interaction/usecases/GrabableAreaDisplayUseCase.cc
     src/interaction/usecases/DragFeedbackUseCase.cc

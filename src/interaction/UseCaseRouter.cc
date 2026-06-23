@@ -9,7 +9,7 @@
 #include "interaction/KeyUseCase.h"
 #include "interaction/CommandUseCase.h"
 #include "overlay/OverlayRenderer.h"
-#include "interaction/usecases/MoveUseCase.h"
+#include "interaction/usecases/DragUseCase.h"
 #include "interaction/usecases/CursorHighlightUseCase.h"
 #include "interaction/usecases/GrabableAreaDisplayUseCase.h"
 #include "interaction/usecases/DragFeedbackUseCase.h"
@@ -20,7 +20,7 @@ namespace MugLab::OfxBase {
 
 UseCaseRouter::UseCaseRouter() {
     factories_.emplace_back([this]() -> std::unique_ptr<InteractionUseCase> {
-        return std::make_unique<MoveUseCase>();
+        return std::make_unique<DragUseCase>();
     });
     factories_.emplace_back([this]() -> std::unique_ptr<InteractionUseCase> {
         return std::make_unique<CursorHighlightUseCase>();

@@ -4,10 +4,10 @@
 
 namespace MugLab::OfxBase {
 
-class MoveUseCase : public InteractionUseCase {
+class DragUseCase : public InteractionUseCase {
    public:
-    MoveUseCase();
-    virtual ~MoveUseCase() = default;
+    DragUseCase();
+    virtual ~DragUseCase() = default;
 
     [[nodiscard]] auto name() const -> std::string_view override;
     [[nodiscard]] auto activationTrigger() const -> ActivationTrigger override {
