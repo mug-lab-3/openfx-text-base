@@ -18,15 +18,12 @@ class DragFeedbackUseCase : public PassiveUseCase {
                                  const SnapshotState* activationSnapshot,
                                  const std::vector<std::string_view>& activeUseCases) const -> HandlingRole override;
 
-    void onStart(SnapshotState& snapshot, ParameterManager& parameterManager) override;
-    void onFinish(SnapshotState& snapshot, ParameterManager& parameterManager) override;
+    auto onDraw(OverlayRenderer& overlayRenderer, const SnapshotState& snapshot, const CurrentState& current,
+                const std::vector<std::string_view>& activeUseCases) -> UseCaseResult override;
 
     [[nodiscard]] auto declaredConsumedIntents() const -> std::vector<std::string_view> override {
         return { "isDragging" };
     }
-
-   private:
-    double originalFontSize_ = 0.0;
 };
 
 } // namespace MugLab::OfxBase

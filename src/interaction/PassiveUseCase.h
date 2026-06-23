@@ -16,23 +16,34 @@ class PassiveUseCase : public InteractionUseCase {
 
     // Filter out ParameterManager by providing final implementations that delegate to parameter-free versions.
 
-    auto penDown(const InteractionInput& input, SnapshotState& snapshot, ParameterManager& parameterManager,
-                 const std::vector<std::string_view>& activeUseCases) -> UseCaseResult override {
+    void onStart(SnapshotState& snapshot, ParameterManager&) final {
+        onPassiveStart(snapshot);
+    }
+
+    void onFinish(SnapshotState& snapshot, ParameterManager&) final {
+        onPassiveFinish(snapshot);
+    }
+
+    auto penDown(const InteractionInput& input, SnapshotState& snapshot, ParameterManager&,
+                 const std::vector<std::string_view>& activeUseCases) -> UseCaseResult final {
         return onPassivePenDown(input, snapshot, activeUseCases);
     }
 
     auto penMotion(const InteractionInput& input, SnapshotState& snapshot, const CurrentState& current,
-                   ParameterManager& parameterManager,
-                   const std::vector<std::string_view>& activeUseCases) -> UseCaseResult override {
+                   ParameterManager&,
+                   const std::vector<std::string_view>& activeUseCases) -> UseCaseResult final {
         return onPassivePenMotion(input, snapshot, current, activeUseCases);
     }
 
-    auto penUp(const InteractionInput& input, SnapshotState& snapshot, ParameterManager& parameterManager,
-               const std::vector<std::string_view>& activeUseCases) -> UseCaseResult override {
+    auto penUp(const InteractionInput& input, SnapshotState& snapshot, ParameterManager&,
+               const std::vector<std::string_view>& activeUseCases) -> UseCaseResult final {
         return onPassivePenUp(input, snapshot, activeUseCases);
     }
 
    protected:
+    virtual void onPassiveStart(SnapshotState&) {}
+    virtual void onPassiveFinish(SnapshotState&) {}
+
     /**
      * @brief Passive version of penDown.
      */

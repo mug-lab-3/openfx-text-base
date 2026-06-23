@@ -1,7 +1,6 @@
 #include "interaction/usecases/DragFeedbackUseCase.h"
-
-#include "params/ParamIds.h"
-#include "params/ParameterManager.h"
+#include "overlay/OverlayRenderer.h"
+#include <array>
 
 namespace MugLab::OfxBase {
 
@@ -17,14 +16,31 @@ auto DragFeedbackUseCase::canHandle(const InteractionInput& input, const Snapsho
     return current.intents_.has("isDragging") ? HandlingRole::Passive : HandlingRole::None;
 }
 
-void DragFeedbackUseCase::onStart(SnapshotState& snapshot, ParameterManager& parameterManager) {
-    originalFontSize_ = parameterManager.getDouble(ParamIds::kFontSize, snapshot.time_);
-    parameterManager.setDouble(ParamIds::kFontSize, originalFontSize_ * 1.3, snapshot.time_);
-}
+auto DragFeedbackUseCase::onDraw(OverlayRenderer& overlayRenderer, const SnapshotState& snapshot,
+                                 const CurrentState& current,
+                                 const std::vector<std::string_view>& activeUseCases) -> UseCaseResult {
+    const double cx = current.currentGlobalPos_.x_ * current.canvasWidth_;
+    const double cy = current.currentGlobalPos_.y_ * current.canvasHeight_;
+    constexpr double arm = 40.0;
 
-void DragFeedbackUseCase::onFinish(SnapshotState& snapshot, ParameterManager& parameterManager) {
-    parameterManager.setDouble(ParamIds::kFontSize, originalFontSize_, snapshot.time_);
-}
+    const std::array<OfxPointD, 2> hLine = {{
+        {.x = cx - arm, .y = cy},
+        {.x = cx + arm, .y = cy},
+    }};
+    const std::array<OfxPointD, 2> vLine = {{
+        {.x = cx, .y = cy - arm},
+        {.x = cx, .y = cy + arm},
+    }};
 
+    constexpr OverlayRenderer::Style style = {
+        .color_ = {.red_ = 1.0F, .green_ = 1.0F, .blue_ = 1.0F, .alpha_ = 0.9F},
+        .width_ = 2.0F,
+    };
+    overlayRenderer.applyStyle(style);
+    overlayRenderer.draw(PrimitiveType::Lines, hLine.data(), 2);
+    overlayRenderer.draw(PrimitiveType::Lines, vLine.data(), 2);
+
+    return {.lifecycle_ = UseCaseLifecycle::Continue};
+}
 
 }  // namespace MugLab::OfxBase
