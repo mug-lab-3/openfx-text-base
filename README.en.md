@@ -1,6 +1,7 @@
 # OfxBase — Template for Text OFX Plugin Development
 
-A template repository for getting started with text-focused OFX plugin development.
+A template repository for getting started with text-focused OFX plugin development,
+with the core processing extracted from [Mug Typography](https://muglab3.booth.pm/items/8339678).
 The build system, debug system, and core features are all implemented, along with sample code for interaction, rendering, and parameter definition.
 
 > [!NOTE]
