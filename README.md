@@ -12,6 +12,7 @@
 >
 > - [docs/usecase-base-classes.md](docs/usecase-base-classes.md) — UseCase ベースクラスの設計思想とリファレンス
 > - [docs/interaction-intent.md](docs/interaction-intent.md) — UseCase 間を疎結合に連携する Intent システムの設計
+> - [docs/third-party-libraries.md](docs/third-party-libraries.md) — サードパーティライブラリの選定理由・用途・依存関係
 
 ![overview](docs/images/overview.webp)
 
