@@ -5,8 +5,11 @@ with the core processing extracted from [Mug Typography](https://muglab3.booth.p
 The build system, debug system, and core features are all implemented, along with sample code for interaction, rendering, and parameter definition.
 
 > [!NOTE]
-> Detailed code documentation is not available.
+> Design notes for some parts are available under [docs/](docs/), but detailed documentation for the whole codebase is not available.
 > The easiest way to understand each class and how to use it is to pass the entire repository to an AI (e.g. Claude) for analysis.
+>
+> - [docs/usecase-base-classes.md](docs/usecase-base-classes.md) — Design rationale and reference for the UseCase base classes
+> - [docs/interaction-intent.md](docs/interaction-intent.md) — Design of the Intent system that loosely couples UseCases
 
 ![overview](docs/images/overview.webp)
 
@@ -25,7 +28,7 @@ See [3rdparty-licenses.md](3rdparty-licenses.md) for the full license text of ea
 | [AsmJit](https://github.com/asmjit/asmjit) | latest | Zlib | JIT backend for Blend2D |
 | [utf8cpp](https://github.com/nemtrif/utfcpp) | v4.0.9 | BSL-1.0 | UTF-8 string handling |
 | [glaze](https://github.com/stephenberry/glaze) | v2.2.0 | MIT | JSON serialization |
-| [FreeType](https://github.com/freetype/freetype) | VER-2-14-3 | FTL | Font rasterization |
+| [FreeType](https://github.com/freetype/freetype) | VER-2-14-3 | FTL | Font loading & glyph outline extraction |
 | [HarfBuzz](https://github.com/harfbuzz/harfbuzz) | 14.2.0 | MIT | Text shaping |
 
 ### Build System (`scripts/build.sh`)
@@ -65,6 +68,7 @@ See [3rdparty-licenses.md](3rdparty-licenses.md) for the full license text of ea
 ```text
 .
 ├── CMakeLists.txt
+├── docs/                        # Design notes for some parts
 ├── cmake/
 │   ├── toolchain.cmake          # Windows cross-compile settings (LLVM/Clang/LLD)
 │   ├── mac-settings.cmake       # macOS native build settings (Apple M1, LTO)

@@ -7,8 +7,11 @@
 ビルドシステム・デバッグシステム・コア機能が実装済みで、インタラクション／描画／パラメータ定義のサンプルコードも含んでいます。
 
 > [!NOTE]
-> コードの詳細なドキュメントは整備されていません。
+> 一部の設計については [docs/](docs/) に解説を用意していますが、コード全体の詳細なドキュメントは整備されていません。
 > 各クラスの役割や使い方を把握するには、リポジトリ全体を AI（Claude 等）に渡して解析してもらうのが最も手軽です。
+>
+> - [docs/usecase-base-classes.md](docs/usecase-base-classes.md) — UseCase ベースクラスの設計思想とリファレンス
+> - [docs/interaction-intent.md](docs/interaction-intent.md) — UseCase 間を疎結合に連携する Intent システムの設計
 
 ![overview](docs/images/overview.webp)
 
@@ -27,7 +30,7 @@
 | [AsmJit](https://github.com/asmjit/asmjit) | latest | Zlib | Blend2D の JIT バックエンド |
 | [utf8cpp](https://github.com/nemtrif/utfcpp) | v4.0.9 | BSL-1.0 | UTF-8 文字列処理 |
 | [glaze](https://github.com/stephenberry/glaze) | v2.2.0 | MIT | JSON シリアライズ |
-| [FreeType](https://github.com/freetype/freetype) | VER-2-14-3 | FTL | フォントラスタライズ |
+| [FreeType](https://github.com/freetype/freetype) | VER-2-14-3 | FTL | フォント読み込み・グリフアウトライン取得 |
 | [HarfBuzz](https://github.com/harfbuzz/harfbuzz) | 14.2.0 | MIT | テキストシェーピング |
 
 ### ビルドシステム（`scripts/build.sh`）
@@ -67,6 +70,7 @@
 ```text
 .
 ├── CMakeLists.txt
+├── docs/                        # 一部の設計ドキュメント
 ├── cmake/
 │   ├── toolchain.cmake          # Windows 向けクロスコンパイル設定（LLVM/Clang/LLD）
 │   ├── mac-settings.cmake       # macOS ネイティブビルド設定（Apple M1、LTO）
